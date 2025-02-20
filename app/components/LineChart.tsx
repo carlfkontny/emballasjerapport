@@ -46,7 +46,7 @@ const data = generateData();
 
 export function LineChart() {
   return (
-    <div className="h-[400px] rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+    <div className="h-[400px] rounded-lg bg-white p-12 shadow-sm dark:bg-gray-800">
       <h2 className="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">
         Progress Towards Goal
       </h2>
@@ -71,16 +71,16 @@ export function LineChart() {
           <Line
             type="monotone"
             dataKey="value"
-            stroke="#4f46e5"
+            stroke="green"
             strokeWidth={2}
-            dot={false}
+            dot={true}
           />
           <Line
             type="monotone"
             dataKey="goal"
             stroke="#ef4444"
             strokeWidth={2}
-            strokeDasharray="4 4"
+            strokeDasharray="4 8"
             dot={false}
           />
         </RechartsLineChart>
