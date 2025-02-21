@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Line,
   LineChart as RechartsLineChart,
@@ -11,24 +12,28 @@ import {
 const generateData = () => {
   const data = [];
   let currentValue = 100;
+  let baseUnits = 1000; // Base units sold in 2022
 
   for (let year = 2022; year <= 2025; year++) {
-    const monthsToInclude = year === 2025 ? 3 : 12; // Only include 3 months for 2025
+    const monthsToInclude = year === 2025 ? 3 : 12;
 
     for (let month = 1; month <= monthsToInclude; month++) {
-      // Random variation between -5 and +15
-      const change = Math.floor(Math.random() * 20) - 5;
-      currentValue = Math.max(currentValue + change, 50); // Ensure value doesn't go below 50
+      const change = Math.floor(Math.random() * 5) - 2;
+      currentValue = Math.max(currentValue + change, 50);
+
+      // Calculate actual units based on the percentage
+      const units = Math.round((baseUnits * currentValue) / 100);
 
       data.push({
         name: `${month.toString().padStart(2, "0")}/${year}`,
-        value: currentValue,
-        goal: 50, // Constant goal line
+        percentage: currentValue,
+        units,
+        goal: 50,
       });
     }
   }
 
-  // Add remaining months of 2025 and all of 2026 with only goal value
+  // Add remaining months with only goal value
   for (let year = 2025; year <= 2026; year++) {
     const startMonth = year === 2025 ? 4 : 1;
     for (let month = startMonth; month <= 12; month++) {
@@ -45,11 +50,27 @@ const generateData = () => {
 const data = generateData();
 
 export function LineChart() {
+  const [showUnits, setShowUnits] = useState(false);
+
   return (
     <div className="h-[400px] rounded-lg bg-white p-12 shadow-sm dark:bg-gray-800">
-      <h2 className="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">
-        Progress Towards Goal
-      </h2>
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+            Utvikling over tid
+          </h2>
+          <h3 className="text-sm text-gray-500">
+            For Plastpartnerskapet og egen virksomhet{" "}
+            {showUnits ? "(enheter solgt)" : "(indeks, 2022 = 100)"}
+          </h3>
+        </div>
+        <button
+          onClick={() => setShowUnits(!showUnits)}
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:text-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+        >
+          Vis {showUnits ? "prosent" : "enheter"}
+        </button>
+      </div>
       <ResponsiveContainer width="100%" height="100%">
         <RechartsLineChart data={data}>
           <XAxis
@@ -58,19 +79,19 @@ export function LineChart() {
             fontSize={12}
             tickLine={false}
             axisLine={false}
-            interval={11} // Show one tick per year
+            interval={11}
           />
           <YAxis
             stroke="#888888"
             fontSize={12}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(value) => `${value}`}
+            tickFormatter={(value) => `${value}${showUnits ? "" : "%"}`}
           />
           <Tooltip />
           <Line
             type="monotone"
-            dataKey="value"
+            dataKey={showUnits ? "units" : "percentage"}
             stroke="green"
             strokeWidth={2}
             dot={true}
