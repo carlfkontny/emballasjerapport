@@ -10,6 +10,19 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 
+import { rootAuthLoader } from "@clerk/react-router/ssr.server";
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  UserButton,
+  SignInButton,
+} from "@clerk/react-router";
+
+export async function loader(args: Route.LoaderArgs) {
+  return rootAuthLoader(args);
+}
+
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -41,8 +54,31 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
-  return <Outlet />;
+export default function App({ loaderData }: Route.ComponentProps) {
+  return (
+    <ClerkProvider
+      loaderData={loaderData}
+      signUpFallbackRedirectUrl="/"
+      signInFallbackRedirectUrl="/"
+    >
+      <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-100 to-yellow-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <SignedOut>
+          <div className="flex items-center justify-center py-2 px-4 h-screen">
+            <SignInButton />
+          </div>
+        </SignedOut>
+        <SignedIn>
+          <header className="flex items-center justify-between py-2 px-4">
+            <div className="text-2xl font-bold">Emballasjerapport</div>
+            <UserButton />
+          </header>
+          <main>
+            <Outlet />
+          </main>
+        </SignedIn>
+      </div>
+    </ClerkProvider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
