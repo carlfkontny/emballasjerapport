@@ -1,8 +1,7 @@
 import { Card } from "~/components/Card";
 import { LineChart } from "~/components/LineChart";
-import type { Route } from "../+types/root";
 
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [
     { title: "Dashboard" },
     { name: "description", content: "Analytics Dashboard" },

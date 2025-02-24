@@ -12,7 +12,7 @@ import {
 const generateData = () => {
   const data = [];
   let currentValue = 100;
-  let baseUnits = 1000; // Base units sold in 2022
+  const baseUnits = 1000; // Base units sold in 2022
 
   for (let year = 2022; year <= 2025; year++) {
     const monthsToInclude = year === 2025 ? 3 : 12;
