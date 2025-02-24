@@ -78,11 +78,18 @@ export default function Index() {
         </div>
         <div className="mt-6">
           <LineChart />
-          <Link to="/RegistrerMengder">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
-              Registrer Mengder
-            </button>
-          </Link>
+          <div className="flex justify-center gap-4 mt-4">
+            <Link to="/RegistrerMengder">
+              <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+                Registrer Mengder
+              </button>
+            </Link>
+            <Link to="/RegistrerTiltak">
+              <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+                Registrer Tiltak
+              </button>
+            </Link>
+          </div>
         </div>
       </main>
     </div>
