@@ -1,13 +1,13 @@
-import { type MetaFunction } from "@remix-run/node";
 import { Card } from "~/components/Card";
 import { LineChart } from "~/components/LineChart";
+import type { Route } from "../+types/root";
 
-export const meta: MetaFunction = () => {
+export function meta({}: Route.MetaArgs) {
   return [
     { title: "Dashboard" },
     { name: "description", content: "Analytics Dashboard" },
   ];
-};
+}
 
 export default function Index() {
   return (
