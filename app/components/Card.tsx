@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 interface CardProps {
   title: string;
-  value: string;
+  value: string | number;
   icon: ReactNode;
 }
 

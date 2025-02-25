@@ -1,5 +1,9 @@
+import { getAuth, rootAuthLoader } from "@clerk/react-router/ssr.server";
 import { Card } from "~/components/Card";
 import { LineChart } from "~/components/LineChart";
+import type { Route } from "../+types/root";
+import { prisma } from "~/prisma";
+import { useLoaderData } from "react-router";
 
 export function meta() {
   return [
@@ -8,7 +12,18 @@ export function meta() {
   ];
 }
 
+export async function loader(args: Route.LoaderArgs) {
+  const auth = await getAuth(args);
+  const email = auth.sessionClaims?.email as string;
+  if (!email) return new Response("Unauthorized", { status: 401 });
+
+  // example database request
+  const userCount = await prisma.user.count();
+  return { userCount };
+}
+
 export default function Index() {
+  const { userCount } = useLoaderData<typeof loader>();
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-100 to-yellow-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <main className="p-6 lg:p-8">
@@ -35,7 +50,7 @@ export default function Index() {
           />
           <Card
             title="Active Users"
-            value="2,234"
+            value={userCount}
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
