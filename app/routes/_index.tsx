@@ -1,4 +1,4 @@
-import { getAuth, rootAuthLoader } from "@clerk/react-router/ssr.server";
+import { getAuth } from "@clerk/react-router/ssr.server";
 import { Card } from "~/components/Card";
 import { LineChart } from "~/components/LineChart";
 import type { Route } from "../+types/root";
