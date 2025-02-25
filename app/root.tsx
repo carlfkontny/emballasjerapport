@@ -18,9 +18,29 @@ import {
   UserButton,
   SignInButton,
 } from "@clerk/react-router";
+import { prisma } from "./prisma";
 
 export async function loader(args: Route.LoaderArgs) {
-  return rootAuthLoader(args);
+  return rootAuthLoader(args, async ({ request }) => {
+    const { sessionClaims } = request.auth;
+    const email = sessionClaims?.email as string;
+
+    if (email) {
+      const user = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if (!user) {
+        await prisma.user.create({
+          data: { email },
+        });
+      }
+    }
+
+    return { yourData: "here" };
+  });
 }
 
 export const links: Route.LinksFunction = () => [
