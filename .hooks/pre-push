@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Get the current branch name
+branch="$(git symbolic-ref --short HEAD)"
+
+echo "Running pre-push checks on branch $branch..."
+
+# Run TypeScript type checking
+echo "Running type checking..."
+npm run typecheck
+typecheck_exit_code=$?
+
+if [ $typecheck_exit_code -ne 0 ]; then
+    echo "❌ Type checking failed. Please fix the type errors before pushing."
+    exit 1
+fi
+
+# Run ESLint
+echo "Running linting..."
+npm run lint
+lint_exit_code=$?
+
+if [ $lint_exit_code -ne 0 ]; then
+    echo "❌ Linting failed. Please fix the linting errors before pushing."
+    exit 1
+fi
+
+echo "✅ All checks passed! Proceeding with push."
+exit 0 
