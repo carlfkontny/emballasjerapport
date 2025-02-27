@@ -19,15 +19,19 @@ export async function loader(args: Route.LoaderArgs) {
   if (!email) return new Response("Unauthorized", { status: 401 });
 
   // example database request
-  const userCount = await prisma.user.count();
+  /*  const userCount = await prisma.user.count();
   return { userCount };
+}
+ */
+  /* bruker statiske data fordi det er begrenset pool connection til databasen */
+  return { userCount: 42 };
 }
 
 export default function Index() {
   const { userCount } = useLoaderData<typeof loader>();
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-100 to-yellow-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <main className="p-6 lg:p-8">
+      <main className="mx-auto max-w-7xl p-6 lg:p-8">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card
             title="Mine solgte kopper og matbeholdere"
