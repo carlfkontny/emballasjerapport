@@ -1,6 +1,7 @@
 import { getAuth } from "@clerk/react-router/ssr.server";
 import { Card } from "~/components/Card";
-import { LineChart } from "~/components/LineChart";
+/* import { LineChart } from "~/components/LineChart"; */
+import { Component as Chart } from "~/components/Chart";
 import type { Route } from "../+types/root";
 /* import { prisma } from "~/prisma"; */
 import { useLoaderData } from "react-router";
@@ -94,8 +95,15 @@ export default function Index() {
             }
           />
         </div>
-        <div className="mt-6">
-          <LineChart />
+        <div className="mt-6 grid gap-6">
+          {/* <div className="rounded-lg bg-white/80 p-6 shadow-sm dark:bg-gray-800/80">
+            <h2 className="mb-4 text-lg font-semibold">Line Chart</h2>
+            <LineChart />
+          </div> */}
+          <div className="rounded-lg bg-white/80 p-6 shadow-sm dark:bg-gray-800/80">
+            <h2 className="mb-4 text-lg font-semibold">Bar Chart</h2>
+            <Chart />
+          </div>
         </div>
         <Button variant="outline">Button</Button>
       </main>
