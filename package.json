@@ -8,7 +8,7 @@
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "prepare": "cp .hooks/* .git/hooks/ && chmod +x .git/hooks/*"
+    "prepare": "copy .hooks\\* .git\\hooks\\ || exit 0"
   },
   "dependencies": {
     "@clerk/react-router": "^1.1.0",
