@@ -2,7 +2,7 @@ import { getAuth } from "@clerk/react-router/ssr.server";
 import { Card } from "~/components/Card";
 import { LineChart } from "~/components/LineChart";
 import type { Route } from "../+types/root";
-import { prisma } from "~/prisma";
+/* import { prisma } from "~/prisma"; */
 import { useLoaderData } from "react-router";
 import { Button } from "~/components/ui/button";
 
