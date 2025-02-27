@@ -4,6 +4,7 @@ import { LineChart } from "~/components/LineChart";
 import type { Route } from "../+types/root";
 import { prisma } from "~/prisma";
 import { useLoaderData } from "react-router";
+import { Button } from "~/components/ui/button";
 
 export function meta() {
   return [
@@ -92,6 +93,7 @@ export default function Index() {
         <div className="mt-6">
           <LineChart />
         </div>
+        <Button variant="outline">Button</Button>
       </main>
     </div>
   );
