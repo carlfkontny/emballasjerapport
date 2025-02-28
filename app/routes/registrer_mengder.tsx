@@ -1,4 +1,7 @@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Link } from "react-router";
+import { Button } from "@/components/ui/button";
+import { DatePickerWithRange } from "@/components/DatePicker";
 
 export default function RegistrerMengder() {
   return (
@@ -9,6 +12,13 @@ export default function RegistrerMengder() {
         </h1>
 
         <div className="mt-6 space-y-8">
+          <div>
+            <h2 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-100">
+              Velg tidsperiode
+            </h2>
+            <DatePickerWithRange className="w-full" />
+          </div>
+
           <div>
             <h2 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-100">
               Hva vil du registrere?
@@ -67,6 +77,16 @@ export default function RegistrerMengder() {
               </div>
             </RadioGroup>
           </div>
+        </div>
+        <div className="mt-6 flex justify-center gap-4">
+          <Link to="/." className="w-36">
+            <Button className="w-full">Lagre</Button>
+          </Link>
+          <Link to="/." className="w-36">
+            <Button variant="destructive" className="w-full">
+              Avbryt
+            </Button>
+          </Link>
         </div>
       </main>
     </div>
