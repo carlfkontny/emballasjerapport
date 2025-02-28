@@ -106,7 +106,7 @@ export default function Index() {
           </div>
         </div>
         <div className="mt-6 flex justify-center gap-4">
-          <Link to="/register" className="w-36">
+          <Link to="/registrer_mengder" className="w-36">
             <Button className="w-full">Registrer mengder</Button>
           </Link>
           <Link to="/statistics" className="w-36">
