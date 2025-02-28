@@ -89,24 +89,10 @@ export default function App({ loaderData }: Route.ComponentProps) {
         </SignedOut>
         <SignedIn>
           <header className="sticky top-0 z-50 backdrop-blur-sm border-b border-slate-200/10">
-            <div className="mx-auto max-w-7xl p-6 lg:p-8 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"
-                  />
-                </svg>
-                <h1 className="text-xl font-semibold">Emballasjerapport</h1>
-              </div>
+            <div className="mx-auto max-w-7xl p-6 pt-8 lg:p-8 lg:pt-10 flex items-center justify-between">
+              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-900 to-blue-400 bg-clip-text text-transparent">
+                Plastmåleren
+              </h1>
               <UserButton afterSignOutUrl="/" />
             </div>
           </header>

@@ -147,12 +147,17 @@ export function Component() {
 
       <ChartContainer
         config={chartConfig}
-        className="h-[300px] w-full bg-transparent"
+        className="aspect-[4/3] sm:aspect-[16/9] w-full bg-transparent"
       >
         <BarChart
           accessibilityLayer
           data={chartData}
-          margin={{ top: 10, right: 10, bottom: 20, left: 10 }}
+          margin={{
+            top: 10,
+            right: 5,
+            bottom: 40,
+            left: 0,
+          }}
         >
           <CartesianGrid vertical={false} />
           <XAxis
@@ -160,11 +165,26 @@ export function Component() {
             tickLine={false}
             tickMargin={10}
             axisLine={false}
+            angle={-45}
+            textAnchor="end"
+            height={60}
+            interval={0}
+            tick={{ fontSize: 10 }}
             tickFormatter={(value) => value.slice(0, 3)}
           />
-          <YAxis tickLine={false} tickMargin={10} axisLine={false} />
+          <YAxis
+            tickLine={false}
+            tickMargin={5}
+            axisLine={false}
+            tick={{ fontSize: 10 }}
+            width={30}
+          />
           <ChartTooltip content={<ChartTooltipContent />} />
-          <ChartLegend content={<ChartLegendContent />} />
+          <ChartLegend
+            content={
+              <ChartLegendContent className="flex-wrap text-[10px] sm:text-xs" />
+            }
+          />
           <Bar
             dataKey="drikkebegre_helt"
             stackId="drikkebegre"
@@ -192,10 +212,10 @@ export function Component() {
         </BarChart>
       </ChartContainer>
 
-      <div className="grid grid-cols-2 gap-4 text-sm">
-        <div className="rounded-md border p-3 dark:border-gray-700">
-          <p className="font-medium">Total drikkebegre</p>
-          <p className="mt-1 text-2xl font-semibold">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+        <div className="rounded-md border p-3 dark:border-gray-700 text-center">
+          <p className="font-medium">Totalt antall drikkebegre</p>
+          <p className="mt-1 text-xl sm:text-2xl font-semibold">
             {chartData
               .reduce(
                 (acc, curr) =>
@@ -205,8 +225,8 @@ export function Component() {
               .toLocaleString()}
           </p>
         </div>
-        <div className="rounded-md border p-3 dark:border-gray-700">
-          <p className="font-medium">Total matbeholdere</p>
+        <div className="rounded-md border p-3 dark:border-gray-700 text-center">
+          <p className="font-medium">Totalt antall matbeholdere</p>
           <p className="mt-1 text-2xl font-semibold">
             {chartData
               .reduce(

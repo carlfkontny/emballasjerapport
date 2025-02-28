@@ -6,6 +6,7 @@ import type { Route } from "../+types/root";
 /* import { prisma } from "~/prisma"; */
 import { useLoaderData } from "react-router";
 import { Button } from "~/components/ui/button";
+import { Link } from "react-router-dom";
 
 export function meta() {
   return [
@@ -101,11 +102,19 @@ export default function Index() {
             <LineChart />
           </div> */}
           <div className="rounded-lg bg-white/80 p-6 shadow-sm dark:bg-gray-800/80">
-            <h2 className="mb-4 text-lg font-semibold">Bar Chart</h2>
             <Chart />
           </div>
         </div>
-        <Button variant="outline">Button</Button>
+        <div className="mt-6 flex justify-center gap-4">
+          <Link to="/register" className="w-36">
+            <Button className="w-full">Registrer mengder</Button>
+          </Link>
+          <Link to="/statistics" className="w-36">
+            <Button variant="outline" className="w-full">
+              Registrer tiltak
+            </Button>
+          </Link>
+        </div>
       </main>
     </div>
   );
