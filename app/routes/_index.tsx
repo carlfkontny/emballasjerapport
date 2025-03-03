@@ -3,7 +3,7 @@ import { Card } from "~/components/Card";
 /* import { LineChart } from "~/components/LineChart"; */
 import { Component as Chart } from "~/components/Chart";
 import type { Route } from "../+types/root";
-/* import { prisma } from "~/prisma"; */
+import { prisma } from "../../lib/prisma";
 import { useLoaderData } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Link } from "react-router-dom";
@@ -21,23 +21,25 @@ export async function loader(args: Route.LoaderArgs) {
   if (!email) return new Response("Unauthorized", { status: 401 });
 
   // example database request
-  /*  const userCount = await prisma.user.count();
-  return { userCount };
-}
- */
-  /* bruker statiske data fordi det er begrenset pool connection til databasen */
-  return { userCount: 42 };
+
+  // sum salesData.numberSold
+  const totalSold = await prisma.salesData.aggregate({
+    _sum: {
+      numberSold: true,
+    },
+  });
+  return { totalSold };
 }
 
 export default function Index() {
-  const { userCount } = useLoaderData<typeof loader>();
+  const { totalSold } = useLoaderData<typeof loader>();
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-100 to-yellow-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <main className="mx-auto max-w-7xl p-6 lg:p-8">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card
             title="Mine solgte kopper og matbeholdere"
-            value="30 millioner"
+            value={totalSold._sum.numberSold ?? 0}
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +59,7 @@ export default function Index() {
           />
           <Card
             title="Active Users"
-            value={userCount}
+            value={42}
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
