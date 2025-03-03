@@ -56,6 +56,7 @@ interface CSVUploaderProps {
   onDataSubmit: (data: CSVRow[]) => void;
 }
 
+// eslint-disable-next-line react/prop-types
 const CSVUploader: React.FC<CSVUploaderProps> = ({ onDataSubmit }) => {
   const [file, setFile] = useState<File | null>(null);
   const [parsing, setParsing] = useState<boolean>(false);
