@@ -1,13 +1,13 @@
 import { getAuth } from "@clerk/react-router/ssr.server";
 import { Card } from "~/components/Card";
 /* import { LineChart } from "~/components/LineChart"; */
-import { Component as Chart } from "~/components/Chart";
 import type { Route } from "../+types/root";
 import { prisma } from "../../lib/prisma";
 import { useLoaderData } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Link } from "react-router-dom";
-
+import { LineChartDetails } from "~/components/LineChartDetails";
+import { LineChartAggregate } from "~/components/LineChartAggregate";
 export function meta() {
   return [
     { title: "Dashboard" },
@@ -58,6 +58,26 @@ export default function Index() {
             }
           />
           <Card
+            title="Mine solgte kopper og matbeholdere"
+            value={totalSold._sum.numberSold ?? 0}
+            icon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.171-.879-1.172-2.303 0-3.182C10.536 7.719 11.768 7.5 12 7.5c.725 0 1.45.22 2.003.659"
+                />
+              </svg>
+            }
+          />
+          <Card
             title="Active Users"
             value={42}
             icon={
@@ -77,34 +97,14 @@ export default function Index() {
               </svg>
             }
           />
-          <Card
-            title="Active Sessions"
-            value="573"
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="h-6 w-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"
-                />
-              </svg>
-            }
-          />
+          
         </div>
-        <div className="mt-6 grid gap-6">
-          {/* <div className="rounded-lg bg-white/80 p-6 shadow-sm dark:bg-gray-800/80">
-            <h2 className="mb-4 text-lg font-semibold">Line Chart</h2>
-            <LineChart />
-          </div> */}
+        <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-2">
           <div className="rounded-lg bg-white/80 p-6 shadow-sm dark:bg-gray-800/80">
-            <Chart />
+            <LineChartAggregate />
+          </div>
+          <div className="rounded-lg bg-white/80 p-6 shadow-sm dark:bg-gray-800/80">
+            <LineChartDetails />
           </div>
         </div>
         <div className="mt-6 flex justify-center gap-4">
