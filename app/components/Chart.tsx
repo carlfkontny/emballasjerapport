@@ -127,27 +127,30 @@ const chartConfig = {
 
 export function Component() {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 pt-5">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-medium">Plastforbruk oversikt</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Månedlig oversikt over plast i produkter
+          <h1 className="text-2xl font-medium">Utvikling over tid</h1>
+          <p className="text-lg text-gray-500 dark:text-gray-400">
+            Månedlig oversikt over solgte drikkebegre og matbeholdere av plast
           </p>
         </div>
         <div className="flex gap-2">
-          <button className="rounded-md border px-3 py-1 text-sm hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-            2022
+          <p className="text-lg text-gray-500 dark:text-gray-400">
+            Velg målenhet:
+          </p>  
+          <button className="rounded-md border px-3 py-1 text-base hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+            Antall enheter  
           </button>
-          <button className="rounded-md border px-3 py-1 text-sm hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-            2023
+          <button className="rounded-md border px-3 py-1 text-base hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+            Prosent endring
           </button>
         </div>
       </div>
 
       <ChartContainer
         config={chartConfig}
-        className="aspect-[4/3] sm:aspect-[16/9] w-full bg-transparent"
+        className="aspect-[4/3] sm:aspect-[16/9] w-full bg-transparent pt-20"
       >
         <BarChart
           accessibilityLayer
@@ -169,20 +172,20 @@ export function Component() {
             textAnchor="end"
             height={60}
             interval={0}
-            tick={{ fontSize: 10 }}
+            tick={{ fontSize: 15 }}
             tickFormatter={(value) => value.slice(0, 3)}
           />
           <YAxis
             tickLine={false}
             tickMargin={5}
             axisLine={false}
-            tick={{ fontSize: 10 }}
+            tick={{ fontSize: 15 }}
             width={30}
           />
           <ChartTooltip content={<ChartTooltipContent />} />
           <ChartLegend
             content={
-              <ChartLegendContent className="flex-wrap text-[10px] sm:text-xs" />
+              <ChartLegendContent className="flex-wrap text-[10px] sm:text-base" />
             }
           />
           <Bar
@@ -212,7 +215,7 @@ export function Component() {
         </BarChart>
       </ChartContainer>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
         <div className="rounded-md border p-3 dark:border-gray-700 text-center">
           <p className="font-medium">Totalt antall drikkebegre</p>
           <p className="mt-1 text-xl sm:text-2xl font-semibold">
@@ -237,7 +240,7 @@ export function Component() {
               .toLocaleString()}
           </p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
