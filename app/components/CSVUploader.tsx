@@ -53,11 +53,14 @@ const VALID_CATEGORIES = ["Matbeholder", "Drikkebegre"];
 const VALID_PLASTIC_TYPES = ["Helt av plast", "Delvis av plast"];
 
 interface CSVUploaderProps {
-  onDataSubmit: (data: CSVRow[]) => void;
+  onDataSubmit: (data: CSVRow[]) => Promise<void>;
 }
 
-// eslint-disable-next-line react/prop-types
-const CSVUploader: React.FC<CSVUploaderProps> = ({ onDataSubmit }) => {
+const CSVUploader: React.FC<CSVUploaderProps> = ({
+  onDataSubmit,
+}: {
+  onDataSubmit: (data: CSVRow[]) => Promise<void>;
+}) => {
   const [file, setFile] = useState<File | null>(null);
   const [parsing, setParsing] = useState<boolean>(false);
   const [errors, setErrors] = useState<string[]>([]);
@@ -465,7 +468,15 @@ const CSVUploader: React.FC<CSVUploaderProps> = ({ onDataSubmit }) => {
       {data && (
         <div className="flex justify-end">
           <button
-            onClick={() => onDataSubmit(data)}
+            onClick={async () => {
+              try {
+                await onDataSubmit(data);
+                resetForm();
+              } catch (error) {
+                console.error("Error saving data:", error);
+                alert("Failed to save data. Please try again.");
+              }
+            }}
             className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded"
           >
             Lagre data
