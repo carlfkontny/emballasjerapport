@@ -35,18 +35,18 @@ interface ValidationResults {
 export interface CSVRow {
   "Dato for salg": string;
   Kategori: "Matbeholder" | "Drikkebegre";
-  Plastinnhold: "Helt av plast" | "Delvis av plast";
-  "Number sold": number;
-  "Tons of plastic"?: number;
+  "Helt/delvis av plast": "Helt av plast" | "Delvis av plast";
+  "Enheter solgt": number;
+  "Tonn plast"?: number;
 }
 
 // Define your expected column structure
 const EXPECTED_COLUMNS: ExpectedColumn[] = [
   { name: "Dato for salg", type: "date", required: true },
   { name: "Kategori", type: "string", required: true },
-  { name: "Plastinnhold", type: "string", required: true },
-  { name: "Number sold", type: "number", required: true },
-  { name: "Tons of plastic", type: "number", required: false },
+  { name: "Helt/delvis av plast", type: "string", required: true },
+  { name: "Enheter solgt", type: "number", required: true },
+  { name: "Tonn plast", type: "number", required: false },
 ];
 
 const VALID_CATEGORIES = ["Matbeholder", "Drikkebegre"];

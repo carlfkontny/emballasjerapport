@@ -32,9 +32,9 @@ export async function action({ request }: Route.ActionArgs) {
             data: {
               saleDate: new Date(record["Dato for salg"]),
               category: record.Kategori,
-              plasticType: record.Plastinnhold,
-              numberSold: Number(record["Number sold"]),
-              tonsOfPlastic: Number(record["Tons of plastic"]) || null,
+              plasticType: String(record["Helt/delvis av plast"]),
+              numberSold: Number(record["Enheter solgt"]),
+              tonsOfPlastic: Number(record["Tonn plast"]) || null,
             },
           });
         } catch (error) {
