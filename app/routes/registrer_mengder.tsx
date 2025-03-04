@@ -1,8 +1,4 @@
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Form, Link } from "react-router";
-import { Button } from "@/components/ui/button";
 import CSVUploader from "@/components/CSVUploader";
-import { useState } from "react";
 import type { CSVRow } from "@/components/CSVUploader";
 import { prisma } from "../../lib/prisma";
 import type { SalesData } from "@prisma/client";
@@ -86,7 +82,6 @@ export default function RegistrerMengder({
   actionData: ad,
 }: Route.ComponentProps) {
   const actionData = ad as ActionData;
-  const [showCSVUploader, setShowCSVUploader] = useState(false);
 
   const handleCSVData = async (data: CSVRow[]) => {
     const formData = new FormData();
@@ -115,12 +110,6 @@ export default function RegistrerMengder({
           <h1 className="text-2xl font-bold text-gray-700 dark:text-gray-100">
             Registrer Mengder
           </h1>
-          <Button
-            onClick={() => setShowCSVUploader(!showCSVUploader)}
-            variant="outline"
-          >
-            {showCSVUploader ? "Manuell registrering" : "Last opp CSV"}
-          </Button>
         </div>
 
         {actionData && (
@@ -149,93 +138,7 @@ export default function RegistrerMengder({
           </div>
         )}
 
-        {showCSVUploader ? (
-          <CSVUploader onDataSubmit={handleCSVData} />
-        ) : (
-          <Form>
-            <div className="mt-6 space-y-8">
-              <div>
-                <h2 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-100">
-                  Velg tidsperiode
-                </h2>
-                <DatePickerWithRange className="w-full" />
-              </div>
-
-              <div>
-                <h2 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-100">
-                  Hva vil du registrere?
-                </h2>
-                <RadioGroup defaultValue="Matbeholdere">
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Matbeholdere" id="Matbeholdere" />
-                      <label
-                        htmlFor="Matbeholdere"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Matbeholdere
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Drikkebegre" id="Drikkebegre" />
-                      <label
-                        htmlFor="Drikkebegre"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Drikkebegre
-                      </label>
-                    </div>
-                  </div>
-                </RadioGroup>
-              </div>
-
-              <div>
-                <h2 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-100">
-                  Hva er de laget av?
-                </h2>
-                <RadioGroup defaultValue="Helt av plast">
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem
-                        value="Helt av plast"
-                        id="Helt av plast"
-                      />
-                      <label
-                        htmlFor="Helt av plast"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Helt av plast
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem
-                        value="Delvis av plast"
-                        id="Delvis av plast"
-                      />
-                      <label
-                        htmlFor="Delvis av plast"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Delvis av plast
-                      </label>
-                    </div>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
-            <div className="mt-6 flex justify-center gap-4">
-              <Button type="submit" className="w-full">
-                Lagre
-              </Button>
-
-              <Link to="/." className="w-36">
-                <Button variant="destructive" className="w-full">
-                  Avbryt
-                </Button>
-              </Link>
-            </div>
-          </Form>
-        )}
+        <CSVUploader onDataSubmit={handleCSVData} />
       </main>
     </div>
   );

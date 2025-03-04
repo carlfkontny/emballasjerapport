@@ -357,7 +357,7 @@ const CSVUploader: React.FC<CSVUploaderProps> = ({
           <button
             onClick={handleUpload}
             disabled={!file || parsing}
-            className={`ml-4 px-4 py-2 rounded ${
+            className={`ml-4 px-4 py-2 rounded whitespace-nowrap ${
               !file || parsing
                 ? "bg-gray-300 cursor-not-allowed"
                 : "bg-blue-500 hover:bg-blue-600 text-white"
