@@ -17,11 +17,12 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-const chartData = [
-  { year: "2022", "Antall drikkebegre og matbeholdere": 186 },
-  { year: "2023", "Antall drikkebegre og matbeholdere": 305 },
-  { year: "2024", "Antall drikkebegre og matbeholdere": 237 },
-];
+
+// const chartData = [
+//   { year: "2022", "Antall drikkebegre og matbeholdere": 186 },
+//   { year: "2023", "Antall drikkebegre og matbeholdere": 305 },
+//   { year: "2024", "Antall drikkebegre og matbeholdere": 237 },
+// ];
 
 const chartConfig = {
   "Antall drikkebegre og matbeholdere": {
@@ -30,7 +31,16 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function LineChartAggregate() {
+type SalesByYear = {
+  year: number;
+  numberSold: number;
+};
+
+export function LineChartAggregate({
+  salesByYear,
+}: {
+  salesByYear: SalesByYear[];
+}) {
   return (
     <Card className="h-full">
       <CardHeader className="pb-4">
@@ -54,7 +64,7 @@ export function LineChartAggregate() {
         <ChartContainer config={chartConfig} className="h-[calc(100%-2rem)]">
           <LineChart
             accessibilityLayer
-            data={chartData}
+            data={salesByYear}
             margin={{
               top: 20,
               left: 12,
@@ -72,7 +82,7 @@ export function LineChartAggregate() {
             <YAxis tickLine={false} axisLine={false} tickMargin={8} />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Line
-              dataKey="Antall drikkebegre og matbeholdere"
+              dataKey="numberSold"
               type="monotone"
               stroke={chartConfig["Antall drikkebegre og matbeholdere"].color}
               strokeWidth={2}
