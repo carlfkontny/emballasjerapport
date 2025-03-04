@@ -106,8 +106,8 @@ export function LineChartAggregate({
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
-              {trendDirection} trend med {trendPercentage.toFixed(2)}% dette
-              året
+              {trendDirection} trend på {trendPercentage.toFixed(0)}% i{" "}
+              {thisYear.year}
               {trend > 0 ? (
                 <TrendingUp className="h-4 w-4" />
               ) : (
