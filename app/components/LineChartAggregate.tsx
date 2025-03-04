@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 import {
@@ -41,23 +41,34 @@ export function LineChartAggregate({
 }: {
   salesByYear: SalesByYear[];
 }) {
+  const thisYear = salesByYear[salesByYear.length - 1] || 0;
+  const lastYear = salesByYear[salesByYear.length - 2] || 0;
+
+  const trend = thisYear.numberSold - lastYear.numberSold;
+
+  const trendPercentage = (trend / lastYear.numberSold) * 100;
+
+  const trendDirection = trend > 0 ? "Stigende" : "Synkende";
+
   return (
     <Card className="h-full">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Line Chart - Multiple</CardTitle>
-            <CardDescription>2022 - 2024</CardDescription>
+            <CardTitle>Antall solgte kopper og matbeholdere</CardTitle>
+            <CardDescription>
+              {Math.min(...salesByYear.map((sale) => sale.year))}-
+              {Math.max(...salesByYear.map((sale) => sale.year))}
+            </CardDescription>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Example buttons - customize as needed */}
+          {/* <div className="flex items-center gap-2">
             <button className="rounded-md bg-secondary px-3 py-1 text-sm">
               Daily
             </button>
             <button className="rounded-md bg-primary text-primary-foreground px-3 py-1 text-sm">
               Monthly
             </button>
-          </div>
+          </div> */}
         </div>
       </CardHeader>
       <CardContent className="flex-1">
@@ -95,11 +106,17 @@ export function LineChartAggregate({
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+              {trendDirection} trend med {trendPercentage.toFixed(2)}% dette
+              året
+              {trend > 0 ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
             </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              Showing total visitors for the last 6 months
-            </div>
+            {/* <div className="flex items-center gap-2 leading-none text-muted-foreground">
+                Showing total visitors for the last 6 months
+              </div> */}
           </div>
         </div>
       </CardFooter>

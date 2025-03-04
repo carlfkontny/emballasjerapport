@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 import {
@@ -17,51 +17,73 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-];
+
+// const chartData = [
+//   { month: "January", desktop: 186, mobile: 80 },
+//   { month: "February", desktop: 305, mobile: 200 },
+//   { month: "March", desktop: 237, mobile: 120 },
+//   { month: "April", desktop: 73, mobile: 190 },
+//   { month: "May", desktop: 209, mobile: 130 },
+//   { month: "June", desktop: 214, mobile: 140 },
+// ];
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  numberSold: {
+    label: "Antall solgte kopper og matbeholdere",
     color: "#ff6b6b",
   },
-  mobile: {
-    label: "Mobile",
-    color: "#4ecdc4",
-  },
+  // mobile: {
+  //   label: "Mobile",
+  //   color: "#4ecdc4",
+  // },
 } satisfies ChartConfig;
 
-export function LineChartDetails() {
+type SalesByMonth = {
+  month: string;
+  numberSold: number;
+};
+
+export function LineChartDetails({
+  salesByMonth,
+}: {
+  salesByMonth: SalesByMonth[];
+}) {
+  const thisMonth = salesByMonth[salesByMonth.length - 1] || 0;
+  const lastMonth = salesByMonth[salesByMonth.length - 2] || 0;
+
+  const trend = thisMonth.numberSold - lastMonth.numberSold;
+
+  const trendPercentage = (trend / lastMonth.numberSold) * 100;
+
+  const trendDirection = trend > 0 ? "Stigende" : "Synkende";
+
   return (
     <Card className="h-full">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Line Chart - Multiple</CardTitle>
-            <CardDescription>January - June 2024</CardDescription>
+            <CardTitle>Antall solgte kopper og matbeholdere</CardTitle>
+            <CardDescription>
+              {salesByMonth[0].month} -{" "}
+              {salesByMonth[salesByMonth.length - 1].month}{" "}
+              {new Date().getFullYear()}
+            </CardDescription>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Example buttons - customize as needed */}
+          {/* <div className="flex items-center gap-2">
             <button className="rounded-md bg-secondary px-3 py-1 text-sm">
               Daily
             </button>
             <button className="rounded-md bg-primary text-primary-foreground px-3 py-1 text-sm">
               Monthly
             </button>
-          </div>
+          </div> */}
         </div>
       </CardHeader>
       <CardContent className="flex-1">
         <ChartContainer config={chartConfig} className="h-[calc(100%-2rem)]">
           <LineChart
             accessibilityLayer
-            data={chartData}
+            data={salesByMonth}
             margin={{
               top: 20,
               left: 12,
@@ -80,19 +102,19 @@ export function LineChartDetails() {
             <YAxis tickLine={false} axisLine={false} tickMargin={8} />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Line
-              dataKey="desktop"
+              dataKey="numberSold"
               type="monotone"
-              stroke={chartConfig.desktop.color}
+              stroke={chartConfig.numberSold.color}
               strokeWidth={2}
               dot={false}
             />
-            <Line
+            {/* <Line
               dataKey="mobile"
               type="monotone"
               stroke={chartConfig.mobile.color}
               strokeWidth={2}
               dot={false}
-            />
+            /> */}
           </LineChart>
         </ChartContainer>
       </CardContent>
@@ -100,11 +122,17 @@ export function LineChartDetails() {
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+              {trendDirection} trend med {trendPercentage.toFixed(2)}% denne
+              måneden
+              {trend > 0 ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
             </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
+            {/* <div className="flex items-center gap-2 leading-none text-muted-foreground">
               Showing total visitors for the last 6 months
-            </div>
+            </div> */}
           </div>
         </div>
       </CardFooter>

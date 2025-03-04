@@ -15,6 +15,21 @@ export function meta() {
   ];
 }
 
+const monthNames = [
+  "Januar",
+  "Februar",
+  "Mars",
+  "April",
+  "Mai",
+  "Juni",
+  "Juli",
+  "August",
+  "September",
+  "Oktober",
+  "November",
+  "Desember",
+];
+
 export async function loader(args: Route.LoaderArgs) {
   const auth = await getAuth(args);
   const email = auth.sessionClaims?.email as string;
@@ -40,16 +55,53 @@ export async function loader(args: Route.LoaderArgs) {
     },
   });
 
-  const salesByYear = salesByYearRaw.map(({ saleDate, _sum }) => ({
-    year: saleDate.getFullYear(),
+  const salesByYear = Object.values(
+    salesByYearRaw.reduce((acc, { saleDate, _sum }) => {
+      const year = saleDate.getFullYear();
+      if (!acc[year]) {
+        acc[year] = {
+          year,
+          numberSold: _sum.numberSold || 0,
+        };
+      } else {
+        acc[year].numberSold += _sum.numberSold || 0;
+      }
+      return acc;
+    }, {} as Record<number, { year: number; numberSold: number }>)
+  );
+
+  // number sol per month
+  const currentYear = new Date().getFullYear();
+
+  const salesByMonthRaw = await prisma.salesData.groupBy({
+    by: ["saleDate"],
+    _sum: {
+      numberSold: true,
+    },
+    where: {
+      saleDate: {
+        gte: new Date(currentYear, 0, 1), // Start of the current year
+        lt: new Date(currentYear + 1, 0, 1), // Start of next year
+      },
+    },
+    orderBy: {
+      saleDate: "asc",
+    },
+  });
+
+  const salesByMonth = salesByMonthRaw.map(({ saleDate, _sum }) => ({
+    month: monthNames[saleDate.getMonth()],
     numberSold: _sum.numberSold || 0,
   }));
 
-  return { totalSold, salesByYear };
+  console.log({ salesByYear, salesByMonth });
+
+  return { totalSold, salesByYear, salesByMonth };
 }
 
 export default function Index() {
-  const { totalSold, salesByYear } = useLoaderData<typeof loader>();
+  const { totalSold, salesByYear, salesByMonth } =
+    useLoaderData<typeof loader>();
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-100 to-yellow-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <main className="mx-auto max-w-7xl p-6 lg:p-8">
@@ -120,7 +172,7 @@ export default function Index() {
             <LineChartAggregate salesByYear={salesByYear} />
           </div>
           <div className="rounded-lg bg-white/80 p-6 shadow-sm dark:bg-gray-800/80">
-            <LineChartDetails />
+            <LineChartDetails salesByMonth={salesByMonth} />
           </div>
         </div>
         <div className="mt-6 flex justify-center gap-4">
