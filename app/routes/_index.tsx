@@ -54,7 +54,7 @@ export async function loader(args: Route.LoaderArgs) {
   });
 
   // number sold per year
-  const salesByYearRaw = await prisma.salesData.groupBy({
+  const salesByYearCompanyRaw = await prisma.salesData.groupBy({
     by: ["saleDate"],
     _sum: {
       numberSold: true,
@@ -67,8 +67,33 @@ export async function loader(args: Route.LoaderArgs) {
     },
   });
 
-  const salesByYear = Object.values(
-    salesByYearRaw.reduce((acc, { saleDate, _sum }) => {
+  const salesByYearCompany = Object.values(
+    salesByYearCompanyRaw.reduce((acc, { saleDate, _sum }) => {
+      const year = saleDate.getFullYear();
+      if (!acc[year]) {
+        acc[year] = {
+          year,
+          numberSold: _sum.numberSold || 0,
+        };
+      } else {
+        acc[year].numberSold += _sum.numberSold || 0;
+      }
+      return acc;
+    }, {} as Record<number, { year: number; numberSold: number }>)
+  );
+
+  const salesByYearAllRaw = await prisma.salesData.groupBy({
+    by: ["saleDate"],
+    _sum: {
+      numberSold: true,
+    },
+    orderBy: {
+      saleDate: "asc",
+    },
+  });
+
+  const salesByYearAll = Object.values(
+    salesByYearAllRaw.reduce((acc, { saleDate, _sum }) => {
       const year = saleDate.getFullYear();
       if (!acc[year]) {
         acc[year] = {
@@ -107,18 +132,18 @@ export async function loader(args: Route.LoaderArgs) {
     numberSold: _sum.numberSold || 0,
   }));
 
-  console.log({ salesByYear, salesByMonth });
+  console.log({ salesByYear: salesByYearCompany, salesByMonth });
 
-  return { totalSoldCompany, salesByYear, totalSoldAll };
+  return { totalSoldCompany, salesByYearCompany, totalSoldAll, salesByYearAll, companyName : company };
 }
 
 export default function Index() {
-  const { totalSoldCompany, salesByYear, totalSoldAll } =
+  const { totalSoldCompany, salesByYearCompany, totalSoldAll, salesByYearAll, companyName } =
     useLoaderData<typeof loader>();
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-100 to-yellow-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <main className="mx-auto max-w-7xl p-6 lg:p-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
           <Card
             title="Mine solgte kopper og matbeholdere"
             value={totalSoldCompany?._sum?.numberSold ?? 0}
@@ -159,34 +184,12 @@ export default function Index() {
               </svg>
             }
           />
-          <Card
-            title="Active Users"
-            value={42}
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="h-6 w-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
-                />
-              </svg>
-            }
-          />
         </div>
-        <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+        <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-1">
           <div className="rounded-lg bg-white/80 p-6 shadow-sm dark:bg-gray-800/80">
-            <LineChartAggregate salesByYear={salesByYear} />
+            <LineChartAggregate salesByYearCompany={salesByYearCompany} salesByYearAll={salesByYearAll} companyName={companyName} />
           </div>
-          <div className="rounded-lg bg-white/80 p-6 shadow-sm dark:bg-gray-800/80">
-            {/* <LineChartDetails salesByMonth={salesByMonth} /> */}
-          </div>
+         
         </div>
         <div className="mt-6 flex justify-center gap-4">
           <Link to="/registrer_mengder" className="w-36">

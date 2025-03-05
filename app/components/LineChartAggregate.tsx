@@ -31,45 +31,72 @@ import {
 //   { year: "2024", "Antall drikkebegre og matbeholdere": 237 },
 // ];
 
-const chartConfig = {
-  "Antall drikkebegre og matbeholdere": {
-    label: "Antall drikkebegre og matbeholdere",
-    color: "#81b29a",
-  },
-} satisfies ChartConfig;
+const chartConfig = (companyName: string) => {
+  return {
+    numberSoldCompany: {
+      label: `${companyName}`,
+      color: "#81b29a",
+    },
+    numberSoldAll: {
+      label: "Plastpartnerskapet",
+      color: "#000000",
+    },
+  } satisfies ChartConfig;
+};
 
 type SalesByYear = {
   year: number;
   numberSold: number;
 };
+
+type SalesByYearCombined = {
+  year: number;
+  numberSoldCompany: number;
+  numberSoldAll: number;
+};
+
 export function LineChartAggregate({
-  salesByYear,
+  salesByYearCompany,
+  salesByYearAll,
+  companyName,
 }: {
-  salesByYear: SalesByYear[];
+  salesByYearCompany: SalesByYear[];
+  salesByYearAll: SalesByYear[];
+  companyName: string;
 }) {
-  return salesByYear?.length > 0 ? (
-    <LineChartAggregateWithData salesByYear={salesByYear} />
+  const salesByYearCombined: SalesByYearCombined[] = salesByYearAll.map(
+    (sale) => ({
+      year: sale.year,
+      numberSoldCompany:
+        salesByYearCompany.find((s) => s.year === sale.year)?.numberSold || 0,
+      numberSoldAll: sale.numberSold,
+    })
+  );
+
+  return salesByYearCombined?.length > 0 ? (
+    <LineChartAggregateWithData
+      salesByYearCombined={salesByYearCombined}
+      chartConfig={chartConfig(companyName)}
+    />
   ) : (
     <NoData />
   );
 }
 
 function LineChartAggregateWithData({
-  salesByYear,
+  salesByYearCombined,
+  chartConfig,
 }: {
-  salesByYear: SalesByYear[];
+  salesByYearCombined: SalesByYearCombined[];
+  chartConfig: ChartConfig;
 }) {
-
   return (
     <Card className="h-full">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <div>
+          <div className="flex flex-col gap-1">
             <CardTitle>Antall solgte drikkebegre og matbeholdere</CardTitle>
-            <CardDescription>
-              {Math.min(...salesByYear.map((sale) => sale.year))}
-              {Math.max(...salesByYear.map((sale) => sale.year))}
-            </CardDescription>
+            <CardDescription>2022 - 2026</CardDescription>
           </div>
           {/* <div className="flex items-center gap-2">
             <button className="rounded-md bg-secondary px-3 py-1 text-sm">
@@ -82,15 +109,15 @@ function LineChartAggregateWithData({
         </div>
       </CardHeader>
       <CardContent className="flex-1">
-        <ChartContainer config={chartConfig} className="h-[calc(100%-2rem)]">
+        <ChartContainer config={chartConfig} className="h-96 w-full">
           <LineChart
             accessibilityLayer
-            data={salesByYear}
+            data={salesByYearCombined}
             margin={{
               top: 20,
-              left: 12,
-              right: 110,
-              bottom: 20,
+              left: 0,
+              right: 70,
+              bottom: 0,
             }}
           >
             <CartesianGrid vertical={false} />
@@ -101,7 +128,7 @@ function LineChartAggregateWithData({
               tickMargin={8}
             />
             <YAxis tickLine={false} axisLine={false} tickMargin={8} />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent labelFormatter={() => `Solgte enheter`} />} />
             <ReferenceLine
               y={50}
               stroke="#e76f51"
@@ -115,9 +142,16 @@ function LineChartAggregateWithData({
               }}
             />
             <Line
-              dataKey="numberSold"
+              dataKey="numberSoldCompany"
               type="monotone"
-              stroke={chartConfig["Antall drikkebegre og matbeholdere"].color}
+              stroke={chartConfig["numberSoldCompany"].color}
+              strokeWidth={2}
+              dot={false}
+            />
+            <Line
+              dataKey="numberSoldAll"
+              type="monotone"
+              stroke={chartConfig["numberSoldAll"].color}
               strokeWidth={2}
               dot={false}
             />
