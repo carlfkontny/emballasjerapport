@@ -24,6 +24,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useEffect, useState } from "react";
+import { beregnProsentVekst } from "~/lib/prosentVekst";
 
 // const chartData = [
 //   { year: "2022", "Antall drikkebegre og matbeholdere": 186 },
@@ -49,10 +51,12 @@ type SalesByYear = {
   numberSold: number;
 };
 
-type SalesByYearCombined = {
+export type SalesByYearCombined = {
   year: number;
-  numberSoldCompany: number;
-  numberSoldAll: number;
+  numberSoldCompany?: number;
+  numberSoldAll?: number;
+  prosentVekstCompany?: number;
+  prosentVekstAll?: number;
 };
 
 export function LineChartAggregate({
@@ -68,14 +72,23 @@ export function LineChartAggregate({
     (sale) => ({
       year: sale.year,
       numberSoldCompany:
-        salesByYearCompany.find((s) => s.year === sale.year)?.numberSold || 0,
+        salesByYearCompany.find((s) => s.year === sale.year)?.numberSold ||
+        undefined,
       numberSoldAll: sale.numberSold,
     })
   );
+  const salesByYearWith2026 = [
+    ...salesByYearCombined,
+    {
+      year: 2026,
+      numberSoldCompany: undefined,
+      numberSoldAll: undefined,
+    },
+  ];
 
   return salesByYearCombined?.length > 0 ? (
     <LineChartAggregateWithData
-      salesByYearCombined={salesByYearCombined}
+      salesByYearCombined={salesByYearWith2026}
       chartConfig={chartConfig(companyName)}
     />
   ) : (
@@ -90,6 +103,21 @@ function LineChartAggregateWithData({
   salesByYearCombined: SalesByYearCombined[];
   chartConfig: ChartConfig;
 }) {
+  const [unit, setUnit] = useState<"prosent" | "antall">("prosent");
+  const [chartData, setChartData] = useState<SalesByYearCombined[]>([]);
+  useEffect(() => {
+    if (unit === "prosent") {
+      try {
+        setChartData(beregnProsentVekst(salesByYearCombined));
+      } catch (error) {
+        setChartData([]);
+        console.error("Error calculating percentage growth:", error);
+      }
+    } else {
+      setChartData(salesByYearCombined);
+    }
+  }, [salesByYearCombined, unit]);
+  console.log(chartData);
   return (
     <Card className="h-full">
       <CardHeader className="pb-4">
@@ -98,21 +126,36 @@ function LineChartAggregateWithData({
             <CardTitle>Antall solgte drikkebegre og matbeholdere</CardTitle>
             <CardDescription>2022 - 2026</CardDescription>
           </div>
-          {/* <div className="flex items-center gap-2">
-            <button className="rounded-md bg-secondary px-3 py-1 text-sm">
-              Daily
+          <div className="flex items-center gap-2">
+            Velg målenhet:
+            <button
+              className={`rounded-md px-3 py-1 text-sm ${
+                unit === "prosent"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary text-secondary-foreground"
+              }`}
+              onClick={() => setUnit("prosent")}
+            >
+              % endring
             </button>
-            <button className="rounded-md bg-primary text-primary-foreground px-3 py-1 text-sm">
-              Monthly
+            <button
+              className={`rounded-md px-3 py-1 text-sm ${
+                unit === "antall"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary text-secondary-foreground"
+              }`}
+              onClick={() => setUnit("antall")}
+            >
+              Antall enheter
             </button>
-          </div> */}
+          </div>
         </div>
       </CardHeader>
       <CardContent className="flex-1">
         <ChartContainer config={chartConfig} className="h-96 w-full">
           <LineChart
             accessibilityLayer
-            data={salesByYearCombined}
+            data={chartData}
             margin={{
               top: 20,
               left: 0,
@@ -128,32 +171,41 @@ function LineChartAggregateWithData({
               tickMargin={8}
             />
             <YAxis tickLine={false} axisLine={false} tickMargin={8} />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent labelFormatter={() => `Solgte enheter`} />} />
-            <ReferenceLine
-              y={50}
-              stroke="#e76f51"
-              strokeWidth={2}
-              strokeDasharray="3 3"
-              label={{
-                value: "Mål i 2026: -50%",
-                position: "right",
-                offset: 10,
-                style: { fontSize: "12px" },
-              }}
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent labelFormatter={() => `Solgte enheter`} />
+              }
             />
+            {unit === "prosent" && (
+              <ReferenceLine
+                y={50}
+                stroke="#e76f51"
+                strokeWidth={2}
+                strokeDasharray="3 3"
+                label={{
+                  value: "Mål i 2026: -50%",
+                  position: "right",
+                  offset: 10,
+                  style: { fontSize: "12px" },
+                }}
+              />
+            )}
             <Line
-              dataKey="numberSoldCompany"
+              dataKey={
+                unit === "prosent" ? "prosentVekstCompany" : "numberSoldCompany"
+              }
               type="monotone"
               stroke={chartConfig["numberSoldCompany"].color}
               strokeWidth={2}
-              dot={false}
+              dot={true}
             />
             <Line
-              dataKey="numberSoldAll"
+              dataKey={unit === "prosent" ? "prosentVekstAll" : "numberSoldAll"}
               type="monotone"
               stroke={chartConfig["numberSoldAll"].color}
               strokeWidth={2}
-              dot={false}
+              dot={true}
             />
           </LineChart>
         </ChartContainer>
