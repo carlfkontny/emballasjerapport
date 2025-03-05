@@ -62,7 +62,9 @@ export function LineChartDetails({
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Antall solgte kopper og matbeholdere</CardTitle>
+            <CardTitle>
+              Antall solgte kopper og matbeholdere etter plastinnhold
+            </CardTitle>
             <CardDescription>
               {salesByMonth[0].month} -{" "}
               {salesByMonth[salesByMonth.length - 1].month}{" "}

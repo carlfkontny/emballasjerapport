@@ -1,7 +1,14 @@
 "use client";
 
 import { TrendingDown, TrendingUp } from "lucide-react";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+  ReferenceLine,
+} from "recharts";
 
 import {
   Card,
@@ -27,7 +34,7 @@ import {
 const chartConfig = {
   "Antall drikkebegre og matbeholdere": {
     label: "Antall drikkebegre og matbeholdere",
-    color: "#ff6b6b",
+    color: "#81b29a",
   },
 } satisfies ChartConfig;
 
@@ -55,9 +62,9 @@ export function LineChartAggregate({
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Antall solgte kopper og matbeholdere</CardTitle>
+            <CardTitle>Antall solgte drikkebegre og matbeholdere</CardTitle>
             <CardDescription>
-              {Math.min(...salesByYear.map((sale) => sale.year))}-
+              {/* {Math.min(...salesByYear.map((sale) => sale.year))} */}2022-
               {Math.max(...salesByYear.map((sale) => sale.year))}
             </CardDescription>
           </div>
@@ -79,7 +86,7 @@ export function LineChartAggregate({
             margin={{
               top: 20,
               left: 12,
-              right: 12,
+              right: 110,
               bottom: 20,
             }}
           >
@@ -92,6 +99,18 @@ export function LineChartAggregate({
             />
             <YAxis tickLine={false} axisLine={false} tickMargin={8} />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <ReferenceLine
+              y={50}
+              stroke="#e76f51"
+              strokeWidth={2}
+              strokeDasharray="3 3"
+              label={{
+                value: "Mål i 2026: -50%",
+                position: "right",
+                offset: 10,
+                style: { fontSize: "12px" },
+              }}
+            />
             <Line
               dataKey="numberSold"
               type="monotone"
