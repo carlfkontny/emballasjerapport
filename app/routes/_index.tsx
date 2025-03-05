@@ -6,7 +6,7 @@ import { prisma } from "../../lib/prisma";
 import { useLoaderData } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Link } from "react-router-dom";
-import { LineChartDetails } from "~/components/LineChartDetails";
+/* npm  */
 import { LineChartAggregate } from "~/components/LineChartAggregate";
 export function meta() {
   return [
@@ -32,13 +32,22 @@ const monthNames = [
 
 export async function loader(args: Route.LoaderArgs) {
   const auth = await getAuth(args);
-  const email = auth.sessionClaims?.email as string;
-  if (!email) return new Response("Unauthorized", { status: 401 });
+  const company = auth.sessionClaims?.company as string;
+  if (!company) return new Response("Unauthorized", { status: 401 });
 
   // example database request
 
   // sum salesData.numberSold
-  const totalSold = await prisma.salesData.aggregate({
+  const totalSoldCompany = await prisma.salesData.aggregate({
+    _sum: {
+      numberSold: true,
+    },
+    where: {
+      company: company,
+    },
+  });
+
+  const totalSoldAll = await prisma.salesData.aggregate({
     _sum: {
       numberSold: true,
     },
@@ -52,6 +61,9 @@ export async function loader(args: Route.LoaderArgs) {
     },
     orderBy: {
       saleDate: "asc",
+    },
+    where: {
+      company: company,
     },
   });
 
@@ -79,6 +91,7 @@ export async function loader(args: Route.LoaderArgs) {
       numberSold: true,
     },
     where: {
+      company: company,
       saleDate: {
         gte: new Date(currentYear, 0, 1), // Start of the current year
         lt: new Date(currentYear + 1, 0, 1), // Start of next year
@@ -96,11 +109,11 @@ export async function loader(args: Route.LoaderArgs) {
 
   console.log({ salesByYear, salesByMonth });
 
-  return { totalSold, salesByYear, salesByMonth };
+  return { totalSoldCompany, salesByYear, totalSoldAll };
 }
 
 export default function Index() {
-  const { totalSold, salesByYear, salesByMonth } =
+  const { totalSoldCompany, salesByYear, totalSoldAll } =
     useLoaderData<typeof loader>();
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-100 to-yellow-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -108,7 +121,7 @@ export default function Index() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card
             title="Mine solgte kopper og matbeholdere"
-            value={totalSold._sum.numberSold ?? 0}
+            value={totalSoldCompany?._sum?.numberSold ?? 0}
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -127,8 +140,8 @@ export default function Index() {
             }
           />
           <Card
-            title="Mine solgte kopper og matbeholdere"
-            value={totalSold._sum.numberSold ?? 0}
+            title="Solgte kopper og matbeholdere i Plastpartnerskapet"
+            value={totalSoldAll?._sum?.numberSold ?? 0}
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -172,7 +185,7 @@ export default function Index() {
             <LineChartAggregate salesByYear={salesByYear} />
           </div>
           <div className="rounded-lg bg-white/80 p-6 shadow-sm dark:bg-gray-800/80">
-            <LineChartDetails salesByMonth={salesByMonth} />
+            {/* <LineChartDetails salesByMonth={salesByMonth} /> */}
           </div>
         </div>
         <div className="mt-6 flex justify-center gap-4">

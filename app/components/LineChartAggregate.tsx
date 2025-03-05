@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingDown, TrendingUp } from "lucide-react";
+/* import { TrendingDown, TrendingUp } from "lucide-react"; */
 import {
   CartesianGrid,
   Line,
@@ -14,7 +14,7 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
+  /* CardFooter, */
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -42,20 +42,23 @@ type SalesByYear = {
   year: number;
   numberSold: number;
 };
-
 export function LineChartAggregate({
   salesByYear,
 }: {
   salesByYear: SalesByYear[];
 }) {
-  const thisYear = salesByYear[salesByYear.length - 1] || 0;
-  const lastYear = salesByYear[salesByYear.length - 2] || 0;
+  return salesByYear?.length > 0 ? (
+    <LineChartAggregateWithData salesByYear={salesByYear} />
+  ) : (
+    <NoData />
+  );
+}
 
-  const trend = thisYear.numberSold - lastYear.numberSold;
-
-  const trendPercentage = (trend / lastYear.numberSold) * 100;
-
-  const trendDirection = trend > 0 ? "Stigende" : "Synkende";
+function LineChartAggregateWithData({
+  salesByYear,
+}: {
+  salesByYear: SalesByYear[];
+}) {
 
   return (
     <Card className="h-full">
@@ -64,7 +67,7 @@ export function LineChartAggregate({
           <div>
             <CardTitle>Antall solgte drikkebegre og matbeholdere</CardTitle>
             <CardDescription>
-              {/* {Math.min(...salesByYear.map((sale) => sale.year))} */}2022-
+              {Math.min(...salesByYear.map((sale) => sale.year))}
               {Math.max(...salesByYear.map((sale) => sale.year))}
             </CardDescription>
           </div>
@@ -121,24 +124,15 @@ export function LineChartAggregate({
           </LineChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 font-medium leading-none">
-              {trendDirection} trend på {trendPercentage.toFixed(0)}% i{" "}
-              {thisYear.year}
-              {trend > 0 ? (
-                <TrendingUp className="h-4 w-4" />
-              ) : (
-                <TrendingDown className="h-4 w-4" />
-              )}
-            </div>
-            {/* <div className="flex items-center gap-2 leading-none text-muted-foreground">
-                Showing total visitors for the last 6 months
-              </div> */}
-          </div>
-        </div>
-      </CardFooter>
+    </Card>
+  );
+}
+function NoData() {
+  return (
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle>Ingen data tilgjengelig</CardTitle>
+      </CardHeader>
     </Card>
   );
 }

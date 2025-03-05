@@ -3,6 +3,7 @@ import type { CSVRow } from "@/components/CSVUploader";
 import { prisma } from "../../lib/prisma";
 import type { SalesData } from "@prisma/client";
 import type { Route } from "./+types/registrer_mengder";
+import { getAuth } from "@clerk/react-router/ssr.server";
 
 type ActionData =
   | undefined
@@ -12,9 +13,12 @@ type ActionData =
       successfulRecords: SalesData[] | null;
     };
 
-export async function action({ request }: Route.ActionArgs) {
+export async function action(args : Route.ActionArgs) {
+  const auth = await getAuth(args);
+  const company = auth.sessionClaims?.company as string;
+  if (!company) return new Response("Unauthorized", { status: 401 });
   try {
-    const formData = await request.formData();
+    const formData = await args.request.formData();
     const csvData = JSON.parse(formData.get("csvData") as string) as CSVRow[];
 
     if (!Array.isArray(csvData)) {
@@ -35,6 +39,7 @@ export async function action({ request }: Route.ActionArgs) {
               plasticType: String(record["Helt/delvis av plast"]),
               numberSold: Number(record["Enheter solgt"]),
               tonsOfPlastic: Number(record["Tonn plast"]) || null,
+              company: company,
             },
           });
         } catch (error) {

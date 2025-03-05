@@ -48,15 +48,7 @@ export function LineChartDetails({
 }: {
   salesByMonth: SalesByMonth[];
 }) {
-  const thisMonth = salesByMonth[salesByMonth.length - 1] || 0;
-  const lastMonth = salesByMonth[salesByMonth.length - 2] || 0;
-
-  const trend = thisMonth.numberSold - lastMonth.numberSold;
-
-  const trendPercentage = (trend / lastMonth.numberSold) * 100;
-
-  const trendDirection = trend > 0 ? "Stigende" : "Synkende";
-
+  
   return (
     <Card className="h-full">
       <CardHeader className="pb-4">
@@ -66,8 +58,8 @@ export function LineChartDetails({
               Antall solgte kopper og matbeholdere etter plastinnhold
             </CardTitle>
             <CardDescription>
-              {salesByMonth[0].month} -{" "}
-              {salesByMonth[salesByMonth.length - 1].month}{" "}
+              {salesByMonth[0]?.month} -{" "}
+              {salesByMonth[salesByMonth.length - 1]?.month}{" "}
               {new Date().getFullYear()}
             </CardDescription>
           </div>
