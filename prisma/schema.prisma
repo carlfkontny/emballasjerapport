@@ -37,3 +37,16 @@ model SalesData {
   @@index([category])
   @@index([plasticType])
 }
+
+model Tiltak {
+  id        Int      @id @default(autoincrement())
+  typeTiltak    String
+  kortBeskrivelse String
+  langBeskrivelse String
+  datoIverksatt DateTime
+  company String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+ 

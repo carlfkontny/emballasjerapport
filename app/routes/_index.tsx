@@ -134,12 +134,23 @@ export async function loader(args: Route.LoaderArgs) {
 
   console.log({ salesByYear: salesByYearCompany, salesByMonth });
 
-  return { totalSoldCompany, salesByYearCompany, totalSoldAll, salesByYearAll, companyName : company };
+  return {
+    totalSoldCompany,
+    salesByYearCompany,
+    totalSoldAll,
+    salesByYearAll,
+    companyName: company,
+  };
 }
 
 export default function Index() {
-  const { totalSoldCompany, salesByYearCompany, totalSoldAll, salesByYearAll, companyName } =
-    useLoaderData<typeof loader>();
+  const {
+    totalSoldCompany,
+    salesByYearCompany,
+    totalSoldAll,
+    salesByYearAll,
+    companyName,
+  } = useLoaderData<typeof loader>();
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-100 to-yellow-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <main className="mx-auto max-w-7xl p-6 lg:p-8">
@@ -187,15 +198,18 @@ export default function Index() {
         </div>
         <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-1">
           <div className="rounded-lg bg-white/80 p-6 shadow-sm dark:bg-gray-800/80">
-            <LineChartAggregate salesByYearCompany={salesByYearCompany} salesByYearAll={salesByYearAll} companyName={companyName} />
+            <LineChartAggregate
+              salesByYearCompany={salesByYearCompany}
+              salesByYearAll={salesByYearAll}
+              companyName={companyName}
+            />
           </div>
-         
         </div>
         <div className="mt-6 flex justify-center gap-4">
           <Link to="/registrer_mengder" className="w-36">
             <Button className="w-full">Registrer mengder</Button>
           </Link>
-          <Link to="/statistics" className="w-36">
+          <Link to="/registrer_tiltak" className="w-36">
             <Button variant="outline" className="w-full">
               Registrer tiltak
             </Button>
