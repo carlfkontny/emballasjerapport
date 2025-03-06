@@ -15,21 +15,6 @@ export function meta() {
   ];
 }
 
-const monthNames = [
-  "Januar",
-  "Februar",
-  "Mars",
-  "April",
-  "Mai",
-  "Juni",
-  "Juli",
-  "August",
-  "September",
-  "Oktober",
-  "November",
-  "Desember",
-];
-
 export async function loader(args: Route.LoaderArgs) {
   const auth = await getAuth(args);
   const company = auth.sessionClaims?.company as string;
