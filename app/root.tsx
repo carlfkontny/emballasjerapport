@@ -19,7 +19,7 @@ import {
   SignInButton,
 } from "@clerk/react-router";
 import { prisma } from "./prisma";
-
+import { Dropdown } from "./components/Dropdown";
 export async function loader(args: Route.LoaderArgs) {
   return rootAuthLoader(args, async ({ request }) => {
     const { sessionClaims } = request.auth;
@@ -93,7 +93,10 @@ export default function App({ loaderData }: Route.ComponentProps) {
               <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-900 to-blue-400 bg-clip-text text-transparent">
                 Plastmåleren
               </h1>
-              <UserButton afterSignOutUrl="/" />
+              <div className="flex items-center gap-4">
+                <Dropdown />
+                <UserButton afterSignOutUrl="/" />
+              </div>
             </div>
           </header>
           <main>
