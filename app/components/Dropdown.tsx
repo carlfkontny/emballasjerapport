@@ -25,9 +25,11 @@ export function Dropdown() {
         <DropdownMenuLabel>Velg tabell</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
-          <DropdownMenuRadioItem value="top">
-            Solgte enheter
-          </DropdownMenuRadioItem>
+          <Link download="enheter.csv" to="/last_ned_mengder" target="blank">
+            <DropdownMenuRadioItem value="top">
+              Solgte enheter
+            </DropdownMenuRadioItem>
+          </Link>
           <Link download="tiltak.csv" to="/last_ned_tiltak" target="_blank">
             <DropdownMenuRadioItem value="bottom">
               Innførte tiltak

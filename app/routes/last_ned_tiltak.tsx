@@ -1,9 +1,17 @@
 import { prisma } from "../../lib/prisma";
 import { type Tiltak } from "@prisma/client";
 
-export async function loader() {
-  const tiltak = await prisma.tiltak.findMany();
-  /*legg til where company = company  */
+import type { Route } from "./+types/registrer_mengder";
+import { getAuth } from "@clerk/react-router/ssr.server";
+
+export async function loader(args: Route.LoaderArgs) {
+  const auth = await getAuth(args);
+  const company = auth.sessionClaims?.company as string;
+  if (!company) return new Response("Unauthorized", { status: 401 });
+  const tiltak = await prisma.tiltak.findMany({
+    where: { company },
+  });
+
   return new Response(toCSV(tiltak), {
     headers: {
       "Content-Type": "text/csv",
