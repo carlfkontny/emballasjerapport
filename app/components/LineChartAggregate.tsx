@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/chart";
 import { useEffect, useState } from "react";
 import { beregnProsentVekst } from "~/lib/prosentVekst";
-
+import type { Tiltak } from "@prisma/client";
 // const chartData = [
 //   { year: "2022", "Antall drikkebegre og matbeholdere": 186 },
 //   { year: "2023", "Antall drikkebegre og matbeholdere": 305 },
@@ -63,10 +63,12 @@ export function LineChartAggregate({
   salesByYearCompany,
   salesByYearAll,
   companyName,
+  tiltak,
 }: {
   salesByYearCompany: SalesByYear[];
   salesByYearAll: SalesByYear[];
   companyName: string;
+  tiltak: Tiltak[];
 }) {
   const salesByYearCombined: SalesByYearCombined[] = salesByYearAll.map(
     (sale) => ({
@@ -90,6 +92,7 @@ export function LineChartAggregate({
     <LineChartAggregateWithData
       salesByYearCombined={salesByYearWith2026}
       chartConfig={chartConfig(companyName)}
+      tiltak={tiltak}
     />
   ) : (
     <NoData />
@@ -99,9 +102,11 @@ export function LineChartAggregate({
 function LineChartAggregateWithData({
   salesByYearCombined,
   chartConfig,
+  tiltak,
 }: {
   salesByYearCombined: SalesByYearCombined[];
   chartConfig: ChartConfig;
+  tiltak: Tiltak[];
 }) {
   const [unit, setUnit] = useState<"prosent" | "antall">("prosent");
   const [chartData, setChartData] = useState<SalesByYearCombined[]>([]);
@@ -117,7 +122,7 @@ function LineChartAggregateWithData({
       setChartData(salesByYearCombined);
     }
   }, [salesByYearCombined, unit]);
-  console.log(chartData);
+
   return (
     <Card className="h-full">
       <CardHeader className="pb-4">
@@ -177,6 +182,21 @@ function LineChartAggregateWithData({
                 <ChartTooltipContent labelFormatter={() => `Solgte enheter`} />
               }
             />
+            {tiltak.map((tiltak) => (
+              <ReferenceLine
+                key={tiltak.id}
+                x={tiltak.datoIverksatt.getFullYear()}
+                stroke="green"
+                strokeWidth={2}
+                strokeDasharray="3 3"
+                label={{
+                  value: tiltak.kortBeskrivelse,
+                  position: "top",
+                  offset: 10,
+                  style: { fontSize: "12px" },
+                }}
+              />
+            ))}
             {unit === "prosent" && (
               <ReferenceLine
                 y={50}

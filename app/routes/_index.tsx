@@ -107,32 +107,11 @@ export async function loader(args: Route.LoaderArgs) {
     }, {} as Record<number, { year: number; numberSold: number }>)
   );
 
-  // number sol per month
-  const currentYear = new Date().getFullYear();
-
-  const salesByMonthRaw = await prisma.salesData.groupBy({
-    by: ["saleDate"],
-    _sum: {
-      numberSold: true,
-    },
+  const tiltak = await prisma.tiltak.findMany({
     where: {
       company: company,
-      saleDate: {
-        gte: new Date(currentYear, 0, 1), // Start of the current year
-        lt: new Date(currentYear + 1, 0, 1), // Start of next year
-      },
-    },
-    orderBy: {
-      saleDate: "asc",
     },
   });
-
-  const salesByMonth = salesByMonthRaw.map(({ saleDate, _sum }) => ({
-    month: monthNames[saleDate.getMonth()],
-    numberSold: _sum.numberSold || 0,
-  }));
-
-  console.log({ salesByYear: salesByYearCompany, salesByMonth });
 
   return {
     totalSoldCompany,
@@ -140,6 +119,7 @@ export async function loader(args: Route.LoaderArgs) {
     totalSoldAll,
     salesByYearAll,
     companyName: company,
+    tiltak,
   };
 }
 
@@ -150,6 +130,7 @@ export default function Index() {
     totalSoldAll,
     salesByYearAll,
     companyName,
+    tiltak,
   } = useLoaderData<typeof loader>();
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-100 to-yellow-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -202,6 +183,7 @@ export default function Index() {
               salesByYearCompany={salesByYearCompany}
               salesByYearAll={salesByYearAll}
               companyName={companyName}
+              tiltak={tiltak}
             />
           </div>
         </div>
