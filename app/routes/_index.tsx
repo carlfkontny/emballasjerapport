@@ -8,7 +8,7 @@ import { Button } from "~/components/ui/button";
 import { Link } from "react-router-dom";
 /* npm  */
 import { LineChartAggregate } from "~/components/LineChartAggregate";
-
+import { DialogRegistrerMengder } from "~/components/DialogRegistrerMengder";
 
 export function meta() {
   return [
@@ -183,6 +183,7 @@ export default function Index() {
               Registrer tiltak
             </Button>
           </Link>
+          <DialogRegistrerMengder />
         </div>
       </main>
     </div>
