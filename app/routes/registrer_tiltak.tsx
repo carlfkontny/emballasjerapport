@@ -3,7 +3,6 @@ import { getAuth } from "@clerk/react-router/ssr.server";
 import { prisma } from "../../lib/prisma";
 import type { Route } from "./+types/registrer_tiltak";
 
-
 export async function loader(args: Route.LoaderArgs) {
   const auth = await getAuth(args);
   const company = auth.sessionClaims?.company as string;
@@ -70,6 +69,16 @@ export async function action(args: Route.ActionArgs) {
 export default function RegistrerTiltak() {
   const { tiltak } = useLoaderData<typeof loader>();
 
+  const typeTiltakOptions = [
+    "Satt et tallfestet mål",
+    "Promotert bærekraftige alternativer",
+    "Økonomiske virkemidler",
+    "Markedsføring og salgs-/bruksbegresninger",
+    "Avtaler mellom bedrift og myndigheter",
+    "Holdnings- og informasjonsarbeid",
+    "Annet",
+  ];
+
   return (
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Registrer nytt tiltak</h1>
@@ -81,13 +90,19 @@ export default function RegistrerTiltak() {
           >
             Type tiltak
           </label>
-          <input
-            type="text"
+          <select
             id="typeTiltak"
             name="typeTiltak"
             required
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white"
-          />
+          >
+            <option value="">Velg type tiltak</option>
+            {typeTiltakOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
@@ -95,7 +110,7 @@ export default function RegistrerTiltak() {
             htmlFor="kortBeskrivelse"
             className="block text-sm font-medium text-gray-700"
           >
-            Kort beskrivelse
+            Kort beskrivelse (denne teksten vil vises i grafen)
           </label>
           <input
             type="text"

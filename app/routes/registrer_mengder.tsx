@@ -4,6 +4,7 @@ import { prisma } from "../../lib/prisma";
 import type { SalesData } from "@prisma/client";
 import type { Route } from "./+types/registrer_mengder";
 import { getAuth } from "@clerk/react-router/ssr.server";
+import { Link } from "react-router-dom";
 
 type ActionData =
   | undefined
@@ -13,7 +14,7 @@ type ActionData =
       successfulRecords: SalesData[] | null;
     };
 
-export async function action(args : Route.ActionArgs) {
+export async function action(args: Route.ActionArgs) {
   const auth = await getAuth(args);
   const company = auth.sessionClaims?.company as string;
   if (!company) return new Response("Unauthorized", { status: 401 });
@@ -144,6 +145,13 @@ export default function RegistrerMengder({
         )}
 
         <CSVUploader onDataSubmit={handleCSVData} />
+        <div className="flex justify-center mt-6">
+          <Link to="/">
+            <button className="min-w-[180px] bg-gray-800 text-white py-2.5 px-6 rounded-lg hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 font-medium shadow-sm">
+              Tilbake til hovedsiden
+            </button>
+          </Link>
+        </div>
       </main>
     </div>
   );
